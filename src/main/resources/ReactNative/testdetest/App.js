@@ -24,7 +24,7 @@ class HomeScreen extends React.Component {
         <Text>Home Screen</Text>
         <Button
           title="Go to Details"
-          onPress={() => this.props.navigation.navigate('Details', this.state.infos)}
+          onPress={() => this.props.navigation.navigate('Details')}
         />
       </View>
     );
@@ -50,7 +50,7 @@ class DetailsScreen extends React.Component {
         />
         <Button
           title="Go to Home"
-          onPress={() => this.props.navigation.navigate('Home')}
+          onPress={() => this.props.navigation.navigate('Home.TestHome')}
         />
          <Button
           title="Go Back"
@@ -67,11 +67,13 @@ class DetailsScreen extends React.Component {
 
 const RootStack = createStackNavigator(
   {
-    Home: HomeScreen,
-    Details: DetailsScreen,
+    Home:{
+      TestHome :HomeScreen,
+      Details: DetailsScreen
+    }
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: 'Home.TestHome',
     defaultNavigationOptions: {
       headerStyle: {
         backgroundColor: '#f4511e',

@@ -8,7 +8,7 @@ public class LoginDTOSent {
 	HeyUser Userconnected = new HeyUser();
 
 	String messageSent = null;
-	private boolean Connected;
+	private boolean connected;
 
 	public HeyUser getUserconnected() {
 		return Userconnected;
@@ -23,9 +23,9 @@ public class LoginDTOSent {
 		this.messageSent = messageSent;
 	}
 	public boolean isConnected() {
-		return Connected;
+		return connected;
 	}
 	public void setConnected(boolean isConnected) {
-		this.Connected = isConnected;
+		this.connected = isConnected;
 	}
 }

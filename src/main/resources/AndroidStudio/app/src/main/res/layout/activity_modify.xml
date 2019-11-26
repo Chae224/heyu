@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ModifyActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Mon compte "
+        android:textSize="30sp" />
+
+
+    <TextView
+        android:id="@+id/Name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView"
+        android:layout_marginTop="-15dp"
+        android:gravity="center"
+        android:text="user ? "
+        android:textSize="30sp" />
+
+    <EditText
+        android:id="@+id/ModifyMsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Name"
+        android:layout_marginTop="-1dp"
+        android:hint="Hey, I'm new on HeyU !" />
+
+    <EditText
+        android:id="@+id/ModifyPic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ModifyMsg"
+        android:hint="L'url de votre nouvelle image" />
+
+
+    <ImageView
+        android:id="@+id/imageUrl"
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:layout_below="@+id/ModifyPic"
+        android:layout_marginTop="49dp"
+        android:gravity="center" />
+
+    <Button
+        android:id="@+id/modifyButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageUrl"
+        android:gravity="center"
+        android:text="Valider les changements" />
+
+    <Button
+        android:id="@+id/returnButton"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/modifyButton"
+        android:gravity="center"
+        android:text="Retour" />
+
+</RelativeLayout>

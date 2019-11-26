@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="RegisteryActivity">
+
+
+    <TextView
+
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Create an account "
+        android:textSize="30sp" />
+
+    <EditText
+        android:id="@+id/RegisteryName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView"
+        android:hint="Please type your name" />
+
+    <EditText
+        android:id="@+id/RegisteryPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/RegisteryName"
+        android:hint="Please enter your password" />
+
+    <EditText
+        android:id="@+id/RegisteryConfirmPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/RegisteryPassword"
+        android:hint="Please confirm your password" />
+
+    <Button
+        android:id="@+id/button"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/RegisteryConfirmPassword"
+        android:layout_marginTop="124dp"
+        android:layout_marginBottom="60dp"
+        android:gravity="center"
+        android:text="Créer un compte" />
+
+
+
+</RelativeLayout>

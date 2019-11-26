@@ -1,35 +1,27 @@
 package com.example.demo.dto;
 
+import com.example.demo.model.HeyUserAuthentication;
+import com.example.demo.model.HeyUserProfil;
+
 public class ModifyHeyUserSettingsDTOExpected {
-	private String heyUserName;
-	private String heyUserPassword;
-	private String heyUserPic;
-	private String heyUserMessage;
+
 	
-	public String getHeyUserName() {
-		return heyUserName;
+	private HeyUserAuthentication heyUserAuthentication;
+	private HeyUserProfil heyUserProfil;
+	
+	public HeyUserAuthentication getHeyUserAuthentication() {
+		return heyUserAuthentication;
 	}
-	public void setHeyUserName(String heyUserName) {
-		this.heyUserName = heyUserName;
+	public void setHeyUserAuthentication(HeyUserAuthentication heyUserAuthentication) {
+		this.heyUserAuthentication = heyUserAuthentication;
 	}
-	public String getHeyUserPassword() {
-		return heyUserPassword;
+	public HeyUserProfil getHeyUserProfil() {
+		return heyUserProfil;
 	}
-	public void setHeyUserPassword(String heyUserPassword) {
-		this.heyUserPassword = heyUserPassword;
+	public void setHeyUserProfil(HeyUserProfil heyUserProfil) {
+		this.heyUserProfil = heyUserProfil;
 	}
-	public String getHeyUserPic() {
-		return heyUserPic;
-	}
-	public void setHeyUserPic(String heyUserPic) {
-		this.heyUserPic = heyUserPic;
-	}
-	public String getHeyUserMessage() {
-		return heyUserMessage;
-	}
-	public void setHeyUserMessage(String heyUserMessage) {
-		this.heyUserMessage = heyUserMessage;
-	}
+	
 
 
 }

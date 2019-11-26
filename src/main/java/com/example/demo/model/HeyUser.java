@@ -8,13 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 public class HeyUser {
 
@@ -28,7 +25,7 @@ public class HeyUser {
 	@Transient
 	@JsonIgnore
     private String heyUPasswordConfirm;
-	private String heyUserPic="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
+	private String heyUserPic;
 	@Transient
 	@JsonIgnore
 	private Double heyUserLatitude= 0.0;
