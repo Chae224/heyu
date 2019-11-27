@@ -9,38 +9,38 @@ class MyGeolocation extends React.Component {
 
 
   state = {
-    //if heyUser is connected
-    heyUserIsConnected:true,
+    // //if heyUser is connected
+    // heyUserIsConnected:true,
 
-    //identification
-    heyUserAuthentication:{
-      heyUserName: 'nobody',
-      heyUserPassword: '0000',
-      heyUserConfirmPassword: '0000',
-    },
+    // //identification
+    // heyUserAuthentication:{
+    //   heyUserName: 'nobody',
+    //   heyUserPassword: '0000',
+    //   heyUserConfirmPassword: '0000',
+    // },
 
-    //list of heyUsers near
-    heyUserNearU: [],
+    // //list of heyUsers near
+    // heyUserNearU: [],
 
-    //Profil
-    heyUserProfil:{
-      heyUserMessage: "Hi, I'm new on HeyU!",
-      heyUserPic:"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
-    },
+    // //Profil
+    // heyUserProfil:{
+    //   heyUserMessage: "Hi, I'm new on HeyU!",
+    //   heyUserPic:"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+    // },
 
     //my geolocation
     heyUserLocation:{
-      heyUserLongitude: "3",
-      heyUserLatitude: "3",
+      heyUserLongitude: "0",
+      heyUserLatitude: "0",
       heyUserAccuracy:"0",
-      heyUserSearchRadius:5000,
+      // heyUserSearchRadius:5000,
     },
 
     // count of update geolocation
     positionCountChange: 0
   }
 
-  componentDidUpdate = () => {console.log(this.props.heyUserAuthentication)}
+
 
 
   componentDidMount = () => {
@@ -75,7 +75,7 @@ class MyGeolocation extends React.Component {
     } 
     
 
-    const goToLogging = () => this.props.navigation.navigate('Logging');
+    const goToLogging = () => this.props.navigation.navigate('UpdateHeyUserNearUList');
     goToLogging();
 
   }
@@ -92,36 +92,6 @@ class MyGeolocation extends React.Component {
 
 
 
-  updateHeyUserNearUList = (that) => {
-    console.log("updateHeyUserNearUList s'execute")
-
-    if(that.state.heyUserIsConnected == true){
-        fetch('http://192.168.8.105:8080/updateLocation', {
-        method: 'POST',
-        headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-        heyUserAuthentication: that.props.heyUserAuthentication,
-        heyUserLocation: that.state.heyUserLocation,
-       
-        }),
-         }).then((response) => response.json())
-        .then((responseJson) => {
-            that.setState({ heyUserNearU:responseJson.heyUserNearU });
-            console.log(that.state.heyUserNearU);
-            console.log("longueur du tableau = "+ that.state.heyUserNearU.length);
-            return responseJson.heyUserNearU;
-        })
-        .catch((error) => {
-            console.error(error);
-        });
-
-    }
-
-
-  }
   
   
 
@@ -140,7 +110,8 @@ class MyGeolocation extends React.Component {
 
           that.setState({ heyUserLocation: heyUserLocation });
           // Fetch Here
-          that.updateHeyUserNearUList(that);
+
+          //that.updateHeyUserNearUList(that);
           that.updateHeyuserLocation(that);
 
        },
@@ -160,7 +131,7 @@ class MyGeolocation extends React.Component {
        that.setState({ positionCountChange:this.state.positionCountChange+1});
 
       // Fetch Here
-      that.updateHeyUserNearUList(that);
+      //that.updateHeyUserNearUList(that);
       that.updateHeyuserLocation(that);
 
     },
@@ -187,15 +158,7 @@ class MyGeolocation extends React.Component {
 
 
 
-const mapStateToProps = (state) => {
 
-  return state
-
-  // return {
-  //   heyUserAuthentication: state.heyUserAuthentication,
-  //   heyUserIsConnected:state.heyUserIsConnected
-  // }
-}
 
 
 const mapDispatchToProps = (dispatch) => {
@@ -204,4 +167,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MyGeolocation)
+export default connect(mapDispatchToProps)(MyGeolocation)

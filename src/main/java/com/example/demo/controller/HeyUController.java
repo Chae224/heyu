@@ -187,7 +187,7 @@ public class HeyUController {
 		return ResponseEntity.ok(fileDownloadUri);
 	}
 	
-	@GetMapping("/download/{fileName:.+}")
+	@GetMapping("/files/download/{fileName:.+}")
 	public ResponseEntity downloadFileFromLocal(@PathVariable String fileName) {
 		Path path = Paths.get("users_pictures/"+fileName);
 		Resource resource = null;
@@ -205,5 +205,3 @@ public class HeyUController {
 
 
 }
-
-

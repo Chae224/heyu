@@ -1,60 +1,41 @@
+
 import React from 'react';
 import {Dimensions, Slider, View, Text,  StyleSheet, Button} from 'react-native';
+import { connect } from 'react-redux'
 
 //const used for the styles const
 const ScreenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
-export default class SearchScreen extends React.Component {
+class SearchScreen extends React.Component {
+
 
   state = {
+
     sliderValue : 10,
-
-
+    // heyUserNearU: [],
 
   }
 
+  dispatchRadius(){
+    console.log("Le dispatch se fait");
+    const action = { type: "UPDATE_RADIUS", value: this.state.sliderValue }
+    console.log(action.value);
+    this.props.dispatch(action)
+
+  }
+
+  
+
+
   handleOnSliderChangeFetch = (sliderValue) => {
-
-
-    //Pas fini relocaliser ici le fetch du geoloc
-
-    
-
-    // fetch('http://192.168.8.105:8080/updateLocation', {
-    //   method: 'POST',
-    //   headers: {
-    //   Accept: 'application/json',
-    //   'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //   heyUserAuthentication: this.props.heyUserAuthentication,
-    //   heyUserLocation: {
-    //     ... heyUserLocation,
-    //     heyUserSearchRadius:this.state.sliderValue,
-    //   },
-     
-    //   }),
-    //    }).then((response) => response.json())
-    //   .then((responseJson) => {
-    //     this.setState({ heyUserNearU:responseJson.heyUserNearU });
-    //       console.log(this.state.heyUserNearU);
-    //       console.log("longueur du tableau = "+ this.state.heyUserNearU.length);
-    //       return responseJson.heyUserNearU;
-    //   })
-    //   .catch((error) => {
-    //       console.error(error);
-    //   });
-
-
-
-
-
+  this.dispatchRadius()
 
   }
 
   handleOnSliderChange = (sliderValue) => {
-    this.setState({sliderValue:Math.round(this.toExponential(sliderValue))})
+     this.setState({sliderValue:Math.round(this.toExponential(sliderValue))})
+
   }
 
   toExponential = (x) => {
@@ -84,6 +65,13 @@ export default class SearchScreen extends React.Component {
               <Button title="registering" onPress={() => this.props.navigation.navigate('HeyURegistration')}/>
 
             </View>
+
+            <Text>Longitude = {this.props.heyUserLocation.heyUserLongitude}</Text>
+            <Text>Latitude = {this.props.heyUserLocation.heyUserLatitude}</Text>
+            <Text>name = {this.props.heyUserAuthentication.heyUserName}</Text>
+            <Text>mp = {this.props.heyUserAuthentication.heyUserPassword}</Text>
+
+
             <View style={styles.sliderContainer}>
               <Text>Search radius</Text>
               <Slider
@@ -98,7 +86,8 @@ export default class SearchScreen extends React.Component {
                 onValueChange={this.handleOnSliderChange}
                 onSlidingComplete={this.handleOnSliderChangeFetch}
               />
-              <Text style={styles.sliderInfos}>{this.toLisible(this.state.sliderValue)}</Text>
+
+               <Text style={styles.sliderInfos}>{this.toLisible(this.state.sliderValue)}</Text>
             </View>
         </View>
       );
@@ -131,3 +120,35 @@ const styles = StyleSheet.create({
   },
 });
 
+
+  
+
+
+
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    dispatch: (action) => { dispatch(action) }
+  }
+}
+
+const mapStateToProps = (state) => {
+
+
+  return {
+     heyUserAuthentication:state.auth.heyUserAuthentication,
+     heyUserIsConnected:state.auth.heyUserIsConnected,
+     heyUserLocation:state.loc.heyUserLocation,
+     heyUserNearU:state.loc.heyUserNearU
+
+
+
+  }
+
+
+}
+
+
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchScreen)

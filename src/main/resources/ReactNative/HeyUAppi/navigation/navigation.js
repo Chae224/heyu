@@ -7,6 +7,7 @@ import SearchScreen from '../components/SearchScreen';
 import LoggingScreen from '../components/LoggingScreen';
 import MyGeolocation from '../components/MyGeolocation';
 import HeyURegistration from '../components/HeyURegistration';
+import UpdateHeyUserNearUList from '../components/UpdateHeyUserNearUList';
 
 
 
@@ -24,7 +25,8 @@ const AppNavigator = createStackNavigator(
       },
       Search: SearchScreen,
       MyGeolocation: MyGeolocation,
-      HeyURegistration:HeyURegistration
+      HeyURegistration:HeyURegistration,
+      UpdateHeyUserNearUList:UpdateHeyUserNearUList
     },
 
     {

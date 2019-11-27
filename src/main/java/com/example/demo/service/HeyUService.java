@@ -167,6 +167,7 @@ public class HeyUService {
 	}
 
 	public void save(HeyUser thisUserLogin) {
+		System.out.println("le save se fait");
 		huRep.save(thisUserLogin);
 		
 	}
