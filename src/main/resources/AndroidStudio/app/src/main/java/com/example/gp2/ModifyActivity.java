@@ -3,9 +3,13 @@ package com.example.gp2;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -23,9 +27,11 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpClientStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.lzyzsd.circleprogress.DonutProgress;
+import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,11 +40,15 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
 
 public class ModifyActivity extends AppCompatActivity {
 
@@ -74,6 +84,10 @@ public class ModifyActivity extends AppCompatActivity {
     LinearLayout progress_area;
     public DonutProgress donut_progress;
     private static final int REQUEST_WRITE_STORAGE = 112;
+    Uri fullPhotoUri;
+    Bitmap bitmap;
+    Bitmap photo;
+
 
 //______________________________________________________________________________________________________________________________________________________________________________________
 //                   ON CREATE
@@ -91,7 +105,7 @@ public class ModifyActivity extends AppCompatActivity {
         mMsgInput = (EditText) findViewById(R.id.ModifyMsg);
         mButton = (Button) findViewById(R.id.modifyButton);
         mReturnButton = (Button) findViewById(R.id.returnButton);
-        mImageUrl = (ImageView) findViewById(R.id.imageUrl);
+       // mImageUrl = (ImageView) findViewById(R.id.imageUrl);
         mLogOutButton = (Button) findViewById(R.id.logoutButton);
         queue = Volley.newRequestQueue(this);
 
@@ -105,6 +119,8 @@ public class ModifyActivity extends AppCompatActivity {
         imageview = (ImageView) findViewById(R.id.imageview);
 
 
+        // ---------------------------------------------------------- PERMISSION ----------------------------------------------------------
+
         Boolean hasPermission = (ContextCompat.checkSelfPermission(ModifyActivity.this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
         if (!hasPermission) {
@@ -115,34 +131,13 @@ public class ModifyActivity extends AppCompatActivity {
 
         }
 
-        select_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setType("image/*"); // intent.setType("video/*"); to select videos to upload
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
-                Log.d("intent","intent");
 
-            }
-        });
-
-
-        upload_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (imagepath != null) {
-                    new UploadFileToServer().execute();
-                }else{
-                    Toast.makeText(getApplicationContext(), "Please select a file to upload.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-       // String url = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
+        // String url = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
         //Picasso.get().load(url).into(mImageUrl);
 
-//GET INTENT ----------- PASSATION DES VALEURS DU HEYUSER
+
+
+        // ---------------------------------------------------------- GET INTENT ----------- PASSATION DES VALEURS DU HEYUSER ----------------------------------------------------------
         Intent intent = getIntent();
 
         if (intent.hasExtra("Name")){
@@ -155,7 +150,7 @@ public class ModifyActivity extends AppCompatActivity {
             Log.d("heyUserPasswordModify", heyUserPassword);
         }
 
-//MODIF DES INPUTS
+        // ---------------------------------------------------------- MODIF DES INPUTS ---------------------------------------------------------- ----------------------------------------------------------
         mPicInput.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -192,7 +187,7 @@ public class ModifyActivity extends AppCompatActivity {
             }
         });
 
-        //ENVOI DES MODIFICATIONS
+        // ----------------------------------------------------------ENVOI DES MODIFICATIONS ---------------------------------------------------------- ----------------------------------------------------------
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -203,12 +198,15 @@ public class ModifyActivity extends AppCompatActivity {
 
 
                     JSONObject jsonObject1 = new JSONObject();
-                    JSONObject auth = jsonObject1.getJSONObject("heyUserAuthentication");
-                    JSONObject profil = jsonObject1.getJSONObject("heyUserProfil");
+                    JSONObject auth = new JSONObject();
+                    JSONObject profil = new JSONObject();
+                    File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "file");
+                    Log.d("lol", file.toString());
+
+
 
                     auth.put("heyUserName", heyUserName);
                     auth.put("heyUserPassword", heyUserPassword);
-                    profil.put("heyUserPic", mPicInput.getText().toString());
                     profil.put("heyUserMessage", mMsgInput.getText().toString());
 
                     jsonObject1.put("heyUserAuthentication", auth);
@@ -273,7 +271,7 @@ public class ModifyActivity extends AppCompatActivity {
 
 
 
-        //RETOUR AU SEARCH
+        // ---------------------------------------------------------- RETOUR AU SEARCH  ----------------------------------------------------------
         mReturnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -298,10 +296,58 @@ public class ModifyActivity extends AppCompatActivity {
             }
         });
 
+
+        //---------------------------------------------------------- SELECT  ----------------------------------------------------------
+
+        select_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setType("image/*"); // intent.setType("video/*"); to select videos to upload
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+                Log.d("intent","intent");
+
+            }
+        });
+
+
+
+        // ---------------------------------------------------------- UPLOAD  ----------------------------------------------------------
+        upload_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (imagepath != null) {
+                   /* try {
+
+                        MultipartBody.create()
+
+                        MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+                        multipartEntity.addPart("Title", new StringBody("Title"));
+                        multipartEntity.addPart("Nick", new StringBody("Nick"));
+                        multipartEntity.addPart("Email", new StringBody("Email"));
+                        multipartEntity.addPart("Description", new StringBody(Settings.SHARE.TEXT));
+                        multipartEntity.addPart("Image", new FileBody(image));
+                        httppost.setEntity(multipartEntity);
+
+                        mHttpClient.execute(httppost, new PhotoUploadResponseHandler());
+
+                    } catch (Exception e) {
+                        Log.e(ServerCommunication.class.getName(), e.getLocalizedMessage(), e);
+                    }
+*/
+
+                }
+            }
+        });
+
     }//Oncreate
 
 
-    @Override
+
+
+    // ---------------------------------------------------------- STORAGE PERMISSION----------------------------------------------------------
+   @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode)
@@ -319,27 +365,52 @@ public class ModifyActivity extends AppCompatActivity {
 
     }
 
+    // ---------------------------------------------------------- ACTIVITYRESULT  ----------------------------------------------------------
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK) {
 
-            Uri fullPhotoUri = data.getData();
+            fullPhotoUri = data.getData();
+            photo = (Bitmap) data.getExtras().get("data");
             imageview.setImageURI(fullPhotoUri);
+            Log.d("image :", data.toString());
             imagepath = data.getDataString();
-            Log.d("image :", data.getDataString());
 
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor cursor = getContentResolver().query(fullPhotoUri,
+                    filePathColumn, null, null, null);
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            ImageView imageView = (ImageView) findViewById(R.id.imageview);
+            imageView.setImageBitmap(photo);
+
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), fullPhotoUri);
+
+            } catch (IOException e) {
+                Log.d("BITMAP","error");
+                e.printStackTrace();
+            }
         }
     }
 
 
 
-
+// ---------------------------------------------------------- ---------------------------------------------------------- ---------------------------------------------------------- ----------------------------------------------------------
 
     private class UploadFileToServer extends AsyncTask<String, String, String> {
+
+
         @Override
         protected void onPreExecute() {
+            Log.d("uploadfile onPreExecute","launch");
             // setting progress bar to zero
             donut_progress.setProgress(0);
             uploader_area.setVisibility(View.GONE); // Making the uploader area screen invisible
@@ -351,18 +422,21 @@ public class ModifyActivity extends AppCompatActivity {
 
         @Override
         protected void onProgressUpdate(String... progress) {
+            Log.d("uploadfile onProgressU","launch");
             Log.d("PROG", progress[0]);
             donut_progress.setProgress(Integer.parseInt(progress[0])); //Updating progress
         }
 
         @Override
         protected String doInBackground(String... args) {
+            Log.d("uploadfile doInBack","launch");
             HttpURLConnection.setFollowRedirects(false);
             HttpURLConnection connection = null;
             String fileName = sourceFile.getName();
             Log.d("hello", sourceFile.getName());
 
             try {
+                Log.d("uploadfile Post","launch");
                 connection = (HttpURLConnection) new URL("http://192.168.8.105:8080/upload").openConnection();
                 connection.setRequestMethod("POST");
                 String boundary = "---------------------------boundary";

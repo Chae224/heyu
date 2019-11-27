@@ -61,12 +61,11 @@
     <in.goodiebag.carouselpicker.CarouselPicker
         android:id="@+id/mCarouselPicker"
         android:layout_below="@+id/textView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:background="#DDD"
-        app:items_visible="seven"
+        android:background="@color/colorPrimaryDark"
+        app:items_visible="three"
+        android:layout_margin="20dp"
         />
 
     <!--TextView
@@ -87,13 +86,12 @@
 
     <SeekBar
         android:id="@+id/seekBar"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/mCarouselPicker"
-        android:layout_marginTop="127dp"
-        android:layout_marginBottom="20dp"
+
         android:gravity="center"
-        android:max="1000"
+
         android:text="RadiusCubitus" />
 
     <TextView

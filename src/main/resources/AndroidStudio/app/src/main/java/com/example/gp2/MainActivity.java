@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Find By View
         mButton = (Button) findViewById(R.id.button);
-        mImageUrl = (ImageView) findViewById(R.id.imageUrl);
+        //mImageUrl = (ImageView) findViewById(R.id.imageUrl);
         mNameInput = (EditText) findViewById(R.id.MainName);
         mPasswordInput = (EditText) findViewById(R.id.MainPassword);
         mButton2 = (Button) findViewById(R.id.button2);

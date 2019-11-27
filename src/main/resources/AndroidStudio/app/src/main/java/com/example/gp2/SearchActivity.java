@@ -56,10 +56,11 @@ public class SearchActivity extends AppCompatActivity {
     private LocationListener locationListener;
     private double longitude;
     private double latitude;
-    private double radius = 100;
+    private long radius = 0;
 
     //Response Request
     private String UserNearUString = "Vous n'êtes pas seul ! ";
+    JSONArray usernear;
 
     //Intent
     private String heyUserName;
@@ -100,7 +101,9 @@ public class SearchActivity extends AppCompatActivity {
         sendLocationUpdates();
 
         // Initialize the textview with '0'.
-        mTextViewSeekBar.setText("Covered: " + mSeekBar.getProgress() + "/" + mSeekBar.getMax());
+        mTextViewSeekBar.setText("Covered: " + radius + "/2000km");
+
+        mSeekBar.setMax(12206);
 
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
@@ -109,7 +112,9 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progresValue, boolean fromUser) {
-                radius = 10*Math.exp(progresValue)-10;
+
+
+                radius = Math.round(10*Math.exp(progresValue/1000)-10);
             }
 
             @Override
@@ -119,7 +124,7 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                mTextViewSeekBar.setText("Covered: " + radius + "/" + seekBar.getMax());
+                mTextViewSeekBar.setText("Covered: " + radius + "/ 2000 m");
 
                 sendLocationUpdates();
             }
@@ -309,12 +314,13 @@ public class SearchActivity extends AppCompatActivity {
 
                     try{
 
-                        for(int i=0;i<response.length();i++){
 
 
+                        usernear = response.getJSONArray("heyUserNearU");
 
-                            JSONArray usernear = response.getJSONArray("heyUserNearU");
+                        for(int i=0;i<usernear.length();i++){
                             JSONObject oneUserNear = usernear.getJSONObject(i);
+
                             Log.d("oneUser", oneUserNear.getString("heyUserName"));
                             mixItems.add(new CarouselPicker.TextItem(oneUserNear.getString("heyUserName"), 20));
                             CarouselPicker.CarouselViewAdapter mixAdapter = new CarouselPicker.CarouselViewAdapter(SearchActivity.this, mixItems, 0);
@@ -366,15 +372,21 @@ public class SearchActivity extends AppCompatActivity {
         super.onStop();
         try {
             String URL = "http://192.168.8.105:8080/updateLocation";
-            JSONObject jsonBody = new JSONObject();
+            JSONObject jsonObject1 = new JSONObject();
+            JSONObject auth = new JSONObject();
+            JSONObject location = new JSONObject();
 
-            jsonBody.put("heyUserName", "eloise");
-            jsonBody.put("heyUserPassword", "ADRAR1112");
-            jsonBody.put("heyUserSearchRadius", radius);
-            jsonBody.put("heyUserLongitude", 71.000);
-            jsonBody.put("heyUserLatitude", 25.000);
+            auth.put("heyUserName", heyUserName);
+            auth.put("heyUserPassword", heyUserPassword);
+            location.put("heyUserSearchRadius", radius);
+            location.put("heyUserLongitude", 71.000);
+            location.put("heyUserLatitude", 25.000);
 
-            JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.POST, URL, jsonBody, new Response.Listener<JSONObject>() {
+            jsonObject1.put("heyUserAuthentication", auth);
+            jsonObject1.put("heyUserLocation", location);
+
+
+            JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.POST, URL, jsonObject1, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d("responseDestroyed", response.toString());
@@ -406,16 +418,22 @@ public class SearchActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         try {
+
             String URL = "http://192.168.8.105:8080/updateLocation";
-            JSONObject jsonBody = new JSONObject();
+            JSONObject jsonObject1 = new JSONObject();
+            JSONObject auth = new JSONObject();
+            JSONObject location = new JSONObject();
 
-            jsonBody.put("heyUserName", "eloise");
-            jsonBody.put("heyUserPassword", "ADRAR1112");
-            jsonBody.put("heyUserSearchRadius", radius);
-            jsonBody.put("heyUserLongitude", 71.000);
-            jsonBody.put("heyUserLatitude", 25.000);
+            auth.put("heyUserName", heyUserName);
+            auth.put("heyUserPassword", heyUserPassword);
+            location.put("heyUserSearchRadius", radius);
+            location.put("heyUserLongitude", 71.000);
+            location.put("heyUserLatitude", 25.000);
 
-            JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.POST, URL, jsonBody, new Response.Listener<JSONObject>() {
+            jsonObject1.put("heyUserAuthentication", auth);
+            jsonObject1.put("heyUserLocation", location);
+
+            JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.POST, URL, jsonObject1, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d("responseDestroyed", response.toString());
