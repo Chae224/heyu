@@ -56,7 +56,7 @@ public class SearchActivity extends AppCompatActivity {
     private LocationListener locationListener;
     private double longitude;
     private double latitude;
-    private int radius = 100;
+    private double radius = 100;
 
     //Response Request
     private String UserNearUString = "Vous n'êtes pas seul ! ";
@@ -68,9 +68,9 @@ public class SearchActivity extends AppCompatActivity {
 
     List<CarouselPicker.PickerItem> mixItems = new ArrayList<>();
 
-//______________________________________________________________________________________________________________________________________________________________________________________
-//                   ON CREATE
-//______________________________________________________________________________________________________________________________________________________________________________________
+    //______________________________________________________________________________________________________________________________________________________________________________________
+    //                   ON CREATE
+    //______________________________________________________________________________________________________________________________________________________________________________________
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -78,7 +78,6 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-
 
         //Find By View
         mButton = (Button) findViewById(R.id.button);
@@ -100,7 +99,7 @@ public class SearchActivity extends AppCompatActivity {
 
         sendLocationUpdates();
 
-// Initialize the textview with '0'.
+        // Initialize the textview with '0'.
         mTextViewSeekBar.setText("Covered: " + mSeekBar.getProgress() + "/" + mSeekBar.getMax());
 
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -110,7 +109,7 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progresValue, boolean fromUser) {
-                radius = progresValue;
+                radius = 10*Math.exp(progresValue)-10;
             }
 
             @Override
