@@ -8,6 +8,7 @@ public class ModifyHeyUserSettingsDTOExpected {
 	
 	private HeyUserAuthentication heyUserAuthentication;
 	private HeyUserProfil heyUserProfil;
+	
 	public HeyUserAuthentication getHeyUserAuthentication() {
 		return heyUserAuthentication;
 	}

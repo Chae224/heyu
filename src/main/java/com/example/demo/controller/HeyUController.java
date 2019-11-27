@@ -1,10 +1,29 @@
 package com.example.demo.controller;
 
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import com.example.demo.dto.LoginDTOSent;
 import com.example.demo.dto.ModifyHeyUserSettingsDTOExpected;
 import com.example.demo.dto.UpdatePositionDTO;
@@ -14,6 +33,7 @@ import com.example.demo.model.HeyUser;
 import com.example.demo.service.HeyUService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.xml.txw2.Document;
 
 @RestController
 public class HeyUController {
@@ -120,9 +140,9 @@ public class HeyUController {
 			thisUserLoginDto.setUserconnected(searchedUser);
 			thisUserLoginDto.getUserconnected().setHeyUserMessage(settingsDTO.getHeyUserProfil().getHeyUserMessage());
 			thisUserLoginDto.getUserconnected().setHeyUserPic(settingsDTO.getHeyUserProfil().getHeyUserPic());
-			
 			thisUserLoginDto.setConnected(true);
 			thisUserLoginDto.setMessageSent("Your modifications has been successfully registered !");
+			System.out.println("BUG ICI => "+searchedUser.getHeyUserName());
 			hUServ.save(thisUserLoginDto.getUserconnected());
 			
 
@@ -134,9 +154,53 @@ public class HeyUController {
 			thisUserLoginDto.setMessageSent("You don't have the permission to modify this content... ");
 			return thisUserLoginDto;
 		}
-
 	}
-
+	
+	
+	/**
+	 * Update the picture passed in Param from a post request.
+	 * @param file
+	 * @return
+	 */
+    @PostMapping("/upload")
+	public ResponseEntity uploadToLocalFileSystem(@RequestParam("file") MultipartFile file) {
+    	//TEST TO BE DELETED
+		HeyUser searchedUser = hUServ.searchUserInArrayList( "a", "a", hUServ.getListUsers());
+		//END OF TEST
+		
+		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+		Path path = Paths.get("users_pictures/"+fileName);
+		try {
+			Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+				.path("/files/download/")
+				.path(fileName)
+				.toUriString();
+		
+		//TEST TO BE DELETED
+		searchedUser.setHeyUserPic(fileDownloadUri);
+		hUServ.save(searchedUser);
+		//END OF TEST
+		return ResponseEntity.ok(fileDownloadUri);
+	}
+	
+	@GetMapping("/download/{fileName:.+}")
+	public ResponseEntity downloadFileFromLocal(@PathVariable String fileName) {
+		Path path = Paths.get("users_pictures/"+fileName);
+		Resource resource = null;
+		try {
+			resource = new UrlResource(path.toUri());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok()
+				.contentType(MediaType.parseMediaType("application/octet-stream"))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+				.body(resource);
+	}
 
 
 
