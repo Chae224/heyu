@@ -25,6 +25,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
+import com.synnapps.carouselview.CarouselView;
+import com.synnapps.carouselview.ImageClickListener;
+import com.synnapps.carouselview.ImageListener;
+import com.synnapps.carouselview.ViewListener;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,8 +72,10 @@ public class SearchActivity extends AppCompatActivity {
     private String heyUserName;
     private String heyUserPassword;
 
+    private ArrayList<String> carouselImg = new ArrayList<>();
 
-    List<CarouselPicker.PickerItem> mixItems = new ArrayList<>();
+    CarouselView mCarouselView;
+   // List<CarouselPicker.PickerItem> mixItems = new ArrayList<>();
 
     //______________________________________________________________________________________________________________________________________________________________________________________
     //                   ON CREATE
@@ -80,7 +88,7 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        //Find By View
+        //----------------------------------------------------------------------------Find By View----------------------------------------------------------------------------
         mButton = (Button) findViewById(R.id.button);
         mTextView = (TextView) findViewById(R.id.textView);
         mText2View = (TextView) findViewById(R.id.text2View);
@@ -90,17 +98,38 @@ public class SearchActivity extends AppCompatActivity {
         mSeekBar = (SeekBar) findViewById(R.id.seekBar);
         mTextViewSeekBar = (TextView) findViewById(R.id.textViewSeekBar);
 
-        mCarouselPicker = findViewById(R.id.mCarouselPicker);
-
-        //CAROUSEL
-        CarouselPicker.CarouselViewAdapter mixAdapter = new CarouselPicker.CarouselViewAdapter(this, mixItems, 0);
-        mCarouselPicker.setAdapter(mixAdapter);
-        mixAdapter.notifyDataSetChanged();
-
 
         sendLocationUpdates();
 
-        // Initialize the textview with '0'.
+
+        //---------------------------------------------------------------------------- CAROUSEL ----------------------------------------------------------------------------
+        //CarouselPicker.CarouselViewAdapter mixAdapter = new CarouselPicker.CarouselViewAdapter(this, mixItems, 0);
+        //mCarouselPicker.setAdapter(mixAdapter);
+        //mixAdapter.notifyDataSetChanged();
+         mCarouselView = (CarouselView) findViewById(R.id.carouselView);
+
+        //mCarouselPicker = findViewById(R.id.mCarouselPicker);
+
+        carouselImg.add("https://www.18h39.fr/wp-content/uploads/2019/04/chat-trop-chou-600x420.jpg");
+        carouselImg.add("https://www.18h39.fr/wp-content/uploads/2019/04/chat-trop-chou-600x420.jpg");
+        ImageListener imageListener = new ImageListener() {
+            @Override
+            public void setImageForPosition(int position, ImageView imageView) {
+                Picasso.get().load(carouselImg.get(position)).into(imageView);
+            }
+        };
+
+        mCarouselView.setPageCount(carouselImg.size());
+        mCarouselView.setImageListener(imageListener);
+
+        mCarouselView.setImageClickListener(new ImageClickListener() {
+            @Override
+            public void onClick(int position) {
+                Toast.makeText(SearchActivity.this, "Clicked item: "+ position, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //---------------------------------------------------------------------------- RADIUS ----------------------------------------------------------------------------
         mTextViewSeekBar.setText("Covered: " + radius + "/2000km");
 
         mSeekBar.setMax(12206);
@@ -135,7 +164,8 @@ public class SearchActivity extends AppCompatActivity {
 
 
 
-//GET INTENT ----------- PASSATION DE VALEURS DU HEYUSER
+
+        // ----------------------------------------------------------------------------INTENT HEYUSER ----------------------------------------------------------------------------
         Intent intent = getIntent();
 
         if (intent.hasExtra("Name")){
@@ -150,6 +180,9 @@ public class SearchActivity extends AppCompatActivity {
 
 
         mText2View.setText("Où es-tu " + heyUserName + " ?");
+
+
+        // ---------------------------------------------------------------------------- LOCATION ----------------------------------------------------------------------------
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
@@ -195,7 +228,7 @@ public class SearchActivity extends AppCompatActivity {
             return;
 
         } else {
-            configureButton();
+              configureButton();
             sendLocationUpdates();
         }
 
@@ -217,8 +250,8 @@ public class SearchActivity extends AppCompatActivity {
     }
 
 
-    private void configureButton() {
-        mButton.setOnClickListener(new View.OnClickListener() {
+   private void configureButton() {
+       /* mButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View view) {
@@ -231,7 +264,7 @@ public class SearchActivity extends AppCompatActivity {
                 sendLocationUpdates();
                 locationManager.requestLocationUpdates("gps", 15000, 50, locationListener);
             }
-        });
+        });*/
 
 
         mModifySettingsButton.setOnClickListener(new View.OnClickListener() {
@@ -251,7 +284,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private void getInfo() {
         Log.d("getInfo", "launch");
-        String url = "http://192.168.8.105:8080/getTest";
+        String url = "http://192.168.8.102:8080/getTest";
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>()
@@ -289,7 +322,7 @@ public class SearchActivity extends AppCompatActivity {
         Log.d("sendLocationUpdates","launch");
 
         try {
-            String URL = "http://192.168.8.105:8080/updateLocation";
+            String URL = "http://192.168.8.102:8080/updateLocation";
             JSONObject jsonObject1 = new JSONObject();
             JSONObject auth = new JSONObject();
             JSONObject location = new JSONObject();
@@ -305,7 +338,6 @@ public class SearchActivity extends AppCompatActivity {
 
 
 
-
             JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.POST, URL, jsonObject1, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
@@ -314,24 +346,39 @@ public class SearchActivity extends AppCompatActivity {
 
                     try{
 
-
-
                         usernear = response.getJSONArray("heyUserNearU");
+                        UserNearUString = "";
+                        carouselImg.clear();
+                        Toast.makeText(getApplicationContext(), (usernear.length() +" heyUser(s) sont près de vous !"), Toast.LENGTH_SHORT).show();
 
                         for(int i=0;i<usernear.length();i++){
                             JSONObject oneUserNear = usernear.getJSONObject(i);
 
                             Log.d("oneUser", oneUserNear.getString("heyUserName"));
-                            mixItems.add(new CarouselPicker.TextItem(oneUserNear.getString("heyUserName"), 20));
-                            CarouselPicker.CarouselViewAdapter mixAdapter = new CarouselPicker.CarouselViewAdapter(SearchActivity.this, mixItems, 0);
-                            mCarouselPicker.setAdapter(mixAdapter);
-                            mixAdapter.notifyDataSetChanged();
+                            //mixItems.add(new CarouselPicker.TextItem(oneUserNear.getString("heyUserName"), 20));
+                            //CarouselPicker.CarouselViewAdapter mixAdapter = new CarouselPicker.CarouselViewAdapter(SearchActivity.this, mixItems, 0);
+                            //mCarouselPicker.setAdapter(mixAdapter);
+                           // mixAdapter.notifyDataSetChanged();
+
+                            carouselImg.add((oneUserNear.getString("heyUserPic")));
                             UserNearUString += (oneUserNear.getString("heyUserName")) + " est près de vous.";
-                            Toast.makeText(getApplicationContext(), (oneUserNear.getString("heyUserName") +" est près de vous !"), Toast.LENGTH_SHORT).show();
+
 
                         }
                         //mUserNearU.setText(UserNearUString);
 
+                        ImageListener imagePicassoListener = new ImageListener() {
+                            @Override
+                            public void setImageForPosition(int position, ImageView imageView) {
+                                Picasso.get().load(carouselImg.get(position)).into(imageView);
+
+                            }
+                        };
+                        Log.d("sizemCarouselView", "" + carouselImg.size());
+                        Log.d("userNear", "" + usernear.length());
+
+                        mCarouselView.setPageCount(carouselImg.size());
+                        mCarouselView.setImageListener(imagePicassoListener);
 
 
                     }catch (JSONException e){
@@ -371,7 +418,7 @@ public class SearchActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         try {
-            String URL = "http://192.168.8.105:8080/updateLocation";
+            String URL = "http://192.168.8.102:8080/updateLocation";
             JSONObject jsonObject1 = new JSONObject();
             JSONObject auth = new JSONObject();
             JSONObject location = new JSONObject();
@@ -419,7 +466,7 @@ public class SearchActivity extends AppCompatActivity {
         super.onDestroy();
         try {
 
-            String URL = "http://192.168.8.105:8080/updateLocation";
+            String URL = "http://192.168.8.102:8080/updateLocation";
             JSONObject jsonObject1 = new JSONObject();
             JSONObject auth = new JSONObject();
             JSONObject location = new JSONObject();

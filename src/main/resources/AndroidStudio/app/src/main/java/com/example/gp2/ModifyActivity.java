@@ -37,6 +37,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,7 +47,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 
@@ -194,13 +194,14 @@ public class ModifyActivity extends AppCompatActivity {
                 try {
 
 
-                    String URL = "http://192.168.8.105:8080/ModifyHeyUserSettings";
+                    String URL = "http://192.168.8.102:8080/ModifyHeyUserSettings";
 
 
                     JSONObject jsonObject1 = new JSONObject();
                     JSONObject auth = new JSONObject();
                     JSONObject profil = new JSONObject();
                     File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "file");
+
                     Log.d("lol", file.toString());
 
 
@@ -306,7 +307,7 @@ public class ModifyActivity extends AppCompatActivity {
                 intent.setType("image/*"); // intent.setType("video/*"); to select videos to upload
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
-                Log.d("intent","intent");
+                Log.d("intent",""+ intent.getExtras());
 
             }
         });
@@ -373,10 +374,18 @@ public class ModifyActivity extends AppCompatActivity {
         if (requestCode == 1 && resultCode == RESULT_OK) {
 
             fullPhotoUri = data.getData();
-            photo = (Bitmap) data.getExtras().get("data");
+//             photo = (Bitmap) data.getExtras().get("intent");
             imageview.setImageURI(fullPhotoUri);
-            Log.d("image :", data.toString());
+            Log.d("image :", ""+ data);
             imagepath = data.getDataString();
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), fullPhotoUri);
+                Log.d("BM", ""+bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
 
             String[] filePathColumn = {MediaStore.Images.Media.DATA};
             Cursor cursor = getContentResolver().query(fullPhotoUri,
@@ -387,7 +396,7 @@ public class ModifyActivity extends AppCompatActivity {
             String picturePath = cursor.getString(columnIndex);
             cursor.close();
 
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
+//            Bitmap photo = (Bitmap) data.getExtras().get("data");
             ImageView imageView = (ImageView) findViewById(R.id.imageview);
             imageView.setImageBitmap(photo);
 
@@ -398,9 +407,17 @@ public class ModifyActivity extends AppCompatActivity {
                 Log.d("BITMAP","error");
                 e.printStackTrace();
             }
-        }
-    }
 
+
+
+        }
+
+String charset = "UTF-8";
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "file");
+        String requestURL = "http://192.168.8.102:8080/upload";
+        MultipartRequest multipartRequest = new MultipartRequest()
+
+    }
 
 
 // ---------------------------------------------------------- ---------------------------------------------------------- ---------------------------------------------------------- ----------------------------------------------------------
@@ -437,7 +454,7 @@ public class ModifyActivity extends AppCompatActivity {
 
             try {
                 Log.d("uploadfile Post","launch");
-                connection = (HttpURLConnection) new URL("http://192.168.8.105:8080/upload").openConnection();
+                connection = (HttpURLConnection) new URL("http://192.168.8.102:8080/upload").openConnection();
                 connection.setRequestMethod("POST");
                 String boundary = "---------------------------boundary";
                 String tail = "\r\n--" + boundary + "--\r\n";
