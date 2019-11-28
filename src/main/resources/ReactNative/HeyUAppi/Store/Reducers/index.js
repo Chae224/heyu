@@ -4,8 +4,10 @@ import authenticationReducer from './authenticationReducer'
 import LocationReducer from './LocationReducer'
 
 const rootReducer = combineReducers({
-	authenticationReducer,
-	LocationReducer,
+	auth:authenticationReducer,
+	loc:LocationReducer,
 })
+
+
 
 export default rootReducer

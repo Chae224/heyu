@@ -3,7 +3,6 @@ const initialState = {  heyUserLocation:{
   heyUserLongitude: "1",
   heyUserLatitude: "1",
   heyUserAccuracy:"44000",
-  heyUserSearchRadius:10000,
 },
 heyUserAuthentication:{
   heyUserName: 'blou',
@@ -11,7 +10,9 @@ heyUserAuthentication:{
   heyUserPasswordConfirm: 'blou',
 },
 
-heyUserIsConnected:false
+heyUserIsConnected:false,
+heyUserNearU:[],
+heyUserSearchRadius:10
 }
 
 function updateLocation(state = initialState, action) {
@@ -25,10 +26,31 @@ function updateLocation(state = initialState, action) {
            heyUserLocation:action.value
          }
     
-       // nextState.heyUserLocation=action.value;
-
     console.log("returned state : "+nextState.heyUserLocation.heyUserLongitude)
     return nextState || state
+
+
+
+      case 'UPDATE_HEYUSERNEARU':
+        console.log("UPDATE_HEYUSERNEARU");
+         nextState = {
+           ...state,
+           heyUserNearU:action.value
+         }
+    
+    return nextState || state
+
+
+    case 'UPDATE_RADIUS':
+      console.log("UPDATE_RADIUS");
+       nextState = {
+         ...state,
+         heyUserSearchRadius:action.value
+       }
+  
+  return nextState || state
+
+
   default:
     return state
   }

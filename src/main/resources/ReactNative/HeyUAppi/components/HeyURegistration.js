@@ -39,7 +39,7 @@ class Registration extends React.Component {
 
     register(){
     console.log("fetch de registering")
-        fetch('http://192.168.8.105:8080/registering', {
+        fetch('http://192.168.1.64:8080/registering', {
             method: 'POST',
             headers: {
             Accept: 'application/json',
@@ -47,9 +47,9 @@ class Registration extends React.Component {
             },
             body: JSON.stringify({
                 heyUserAuthentication:{
-                heyUserName: this.state.heyUserName,
-                heyUserPassword: this.state.heyUserPassword,
-                heyUserConfirmPassword: this.state.heyUserConfirmPassword
+                heyUserName: this.state.heyUserAuthentication.heyUserName,
+                heyUserPassword: this.state.heyUserAuthentication.heyUserPassword,
+                heyUserConfirmPassword: this.state.heyUserAuthentication.heyUserConfirmPassword
                 }
             }),
              }).then((response) => response.json())
@@ -78,14 +78,14 @@ class Registration extends React.Component {
         <TextInput
           style={{height: 40}}
           placeholder="UserName"
-          onChangeText={(text) => this.setState({heyUserName:text})}
+          onChangeText={(text) => this.setState({heyUserAuthentication:{ ...this.state.heyUserAuthentication, heyUserName:text}})}
           value={this.state.text}
         />
 
         <TextInput
           style={{height: 40}}
           placeholder="Password"
-          onChangeText={(text) => this.setState({heyUserPassword:text})}
+          onChangeText={(text) => this.setState({heyUserAuthentication:{ ...this.state.heyUserAuthentication, heyUserConfirmPassword:text}})}
           value={this.state.text}
         />
 
@@ -93,7 +93,7 @@ class Registration extends React.Component {
         <TextInput
           style={{height: 40}}
           placeholder="Verify Password"
-          onChangeText={(text) => this.setState({heyUserConfirmPassword:text})}
+          onChangeText={(text) => this.setState({heyUserAuthentication:{heyUserConfirmPassword:text}})}
           value={this.state.text}
         />
         <Button title="registering" onPress={() =>this.register() }/>
@@ -121,9 +121,11 @@ class Registration extends React.Component {
 
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-      dispatch: (action) => { dispatch(action) }
-    }
+  return {
+    dispatch: (action) => { dispatch(action) }
   }
-  
-  export default connect(mapDispatchToProps)(Registration)
+}
+
+
+export default connect(mapDispatchToProps)(Registration)
+
