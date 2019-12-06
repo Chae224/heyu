@@ -194,7 +194,7 @@ public class ModifyActivity extends AppCompatActivity {
                 try {
 
 
-                    String URL = "http://192.168.8.102:8080/ModifyHeyUserSettings";
+                    String URL = "http://192.168.8.101:8080/ModifyHeyUserSettings";
 
 
                     JSONObject jsonObject1 = new JSONObject();
@@ -290,8 +290,8 @@ public class ModifyActivity extends AppCompatActivity {
         mLogOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                startActivityForResult(mainActivityIntent, MAIN_ACTIVITY_REQUEST_CODE);
+                Intent logOutActivityIntent = new Intent(ModifyActivity.this, SearchActivity.class);
+                startActivityForResult(logOutActivityIntent, MAIN_ACTIVITY_REQUEST_CODE);
 
             }
         });
@@ -374,7 +374,7 @@ public class ModifyActivity extends AppCompatActivity {
 
             fullPhotoUri = data.getData();
 //             photo = (Bitmap) data.getExtras().get("intent");
-            Log.d("ResultCode", ""+)
+            Log.d("ResultCode", ""+ data.getData());
             imageview.setImageURI(fullPhotoUri);
             Log.d("image :", ""+ data);
             imagepath = data.getDataString();
@@ -415,7 +415,7 @@ public class ModifyActivity extends AppCompatActivity {
 String charset = "UTF-8";
         File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "file");
         String requestURL = "http://192.168.8.102:8080/upload";
-        MultipartRequest multipartRequest = new MultipartRequest()
+        //MultipartRequest multipartRequest = new MultipartRequest();
 
     }
 

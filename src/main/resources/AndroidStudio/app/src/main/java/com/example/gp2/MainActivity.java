@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    String URL = "http://192.168.8.102:8080/login";
+                    String URL = "http://192.168.8.101:8080/login";
                     JSONObject jsonObject1 = new JSONObject();
                     JSONObject jsonBody = new JSONObject();
                     Log.d("mNameInputmainActivity", mNameInput.getText().toString());
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                             try{
                                 isConnected = response.getBoolean("connected");
                                 message = response.getString("messageSent");
-                                String UserConnected = response.getString("userconnected");
+                                String UserConnected = response.getString("userConnected");
                                 Log.d("userconnected",UserConnected);
 
                                 Log.d("es-tu connecté?", isConnected.toString());

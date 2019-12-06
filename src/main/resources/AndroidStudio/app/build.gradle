@@ -41,4 +41,7 @@ dependencies {
     implementation 'com.github.Vatican-Cameos:CarouselPicker:v1.0'
     implementation 'de.hdodenhof:circleimageview:2.1.0' // https://github.com/hdodenhof/CircleImageView
     implementation 'com.github.lzyzsd:circleprogress:1.2.1'  //https://github.com/lzyzsd/CircleProgress
+
+    implementation 'com.nineoldandroids:library:2.4.0'
+    implementation 'com.daimajia.slider:library:1.1.5@aar'
 }

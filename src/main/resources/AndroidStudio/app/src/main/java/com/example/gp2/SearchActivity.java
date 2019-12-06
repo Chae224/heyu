@@ -30,7 +30,7 @@ import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageClickListener;
 import com.synnapps.carouselview.ImageListener;
 import com.synnapps.carouselview.ViewListener;
-
+import com.daimajia.slider.library.SliderLayout;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,10 +62,11 @@ public class SearchActivity extends AppCompatActivity {
     private LocationListener locationListener;
     private double longitude;
     private double latitude;
-    private long radius = 0;
+    private double radius = 0;
 
     //Response Request
     private String UserNearUString = "Vous n'êtes pas seul ! ";
+    private String radiusText = "Covered : 0 m";
     JSONArray usernear;
 
     //Intent
@@ -74,8 +75,10 @@ public class SearchActivity extends AppCompatActivity {
 
     private ArrayList<String> carouselImg = new ArrayList<>();
 
-    CarouselView mCarouselView;
-   // List<CarouselPicker.PickerItem> mixItems = new ArrayList<>();
+    //CarouselView mCarouselView;
+    List<CarouselPicker.PickerItem> mixItems = new ArrayList<>();
+    SliderLayout sliderLayout;
+    HashMap<String,String> Hash_file_maps ;
 
     //______________________________________________________________________________________________________________________________________________________________________________________
     //                   ON CREATE
@@ -92,7 +95,7 @@ public class SearchActivity extends AppCompatActivity {
         mButton = (Button) findViewById(R.id.button);
         mTextView = (TextView) findViewById(R.id.textView);
         mText2View = (TextView) findViewById(R.id.text2View);
-        //mUserNearU = (TextView) findViewById(R.id.userNearU);
+        mUserNearU = (TextView) findViewById(R.id.userNearU);
         mImageUrl = (ImageView) findViewById(R.id.imageUrl);
         mModifySettingsButton = (Button) findViewById(R.id.modifySettingButton);
         mSeekBar = (SeekBar) findViewById(R.id.seekBar);
@@ -102,34 +105,39 @@ public class SearchActivity extends AppCompatActivity {
         sendLocationUpdates();
 
 
-        //---------------------------------------------------------------------------- CAROUSEL ----------------------------------------------------------------------------
-        //CarouselPicker.CarouselViewAdapter mixAdapter = new CarouselPicker.CarouselViewAdapter(this, mixItems, 0);
+        //---------------------------------------------------------------------------- CAROUSEL ---------------------------------------------------------------------------
+
+        mCarouselPicker = findViewById(R.id.mCarouselPicker);
+
+        //
+        // CarouselPicker.CarouselViewAdapter mixAdapter = new CarouselPicker.CarouselViewAdapter(this, mixItems, 0);
         //mCarouselPicker.setAdapter(mixAdapter);
         //mixAdapter.notifyDataSetChanged();
-         mCarouselView = (CarouselView) findViewById(R.id.carouselView);
+         //mCarouselView = (CarouselView) findViewById(R.id.carouselView);
 
-        //mCarouselPicker = findViewById(R.id.mCarouselPicker);
 
-        carouselImg.add("https://www.18h39.fr/wp-content/uploads/2019/04/chat-trop-chou-600x420.jpg");
-        carouselImg.add("https://www.18h39.fr/wp-content/uploads/2019/04/chat-trop-chou-600x420.jpg");
-        ImageListener imageListener = new ImageListener() {
-            @Override
-            public void setImageForPosition(int position, ImageView imageView) {
-                Picasso.get().load(carouselImg.get(position)).into(imageView);
-            }
-        };
+        //carouselImg.add("https://www.18h39.fr/wp-content/uploads/2019/04/chat-trop-chou-600x420.jpg");
+       // carouselImg.add("https://www.18h39.fr/wp-content/uploads/2019/04/chat-trop-chou-600x420.jpg");
+        //ImageListener imageListener = new ImageListener() {
+           // @Override
+           // public void setImageForPosition(int position, ImageView imageView) {
+              //  Picasso.get().load(carouselImg.get(position)).into(imageView);
+            //}
+        //};
 
-        mCarouselView.setPageCount(carouselImg.size());
-        mCarouselView.setImageListener(imageListener);
+       // mCarouselView.setPageCount(carouselImg.size());
+        //mCarouselView.setImageListener(imageListener);
 
-        mCarouselView.setImageClickListener(new ImageClickListener() {
+        /*mCarouselView.setImageClickListener(new ImageClickListener() {
             @Override
             public void onClick(int position) {
                 Toast.makeText(SearchActivity.this, "Clicked item: "+ position, Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
 
         //---------------------------------------------------------------------------- RADIUS ----------------------------------------------------------------------------
+
+
         mTextViewSeekBar.setText("Covered: " + radius + "/2000km");
 
         mSeekBar.setMax(12206);
@@ -142,8 +150,21 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progresValue, boolean fromUser) {
 
+                double parseProgresValue =  progresValue;
 
-                radius = Math.round(10*Math.exp(progresValue/1000)-10);
+                Log.d("PARSE", ""+ parseProgresValue);
+                radius = Math.round((10*Math.exp(parseProgresValue/1000)-10));
+                if(radius < 1000 ) {
+                   Log.d("radius", "" + radius);
+                   radiusText = "Covered: " + radius + " m";
+                } else if (radius > 1999000){
+                    radiusText = "Covered : 2000km";
+                } else {
+                    radiusText = "Covered : " + radius/1000 + "km";
+                }
+
+
+                Log.d("ProgressValue", ""+progresValue);
             }
 
             @Override
@@ -153,8 +174,9 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                mTextViewSeekBar.setText("Covered: " + radius + "/ 2000 m");
 
+
+                mTextViewSeekBar.setText(radiusText);
                 sendLocationUpdates();
             }
 
@@ -266,7 +288,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         });*/
 
-
+       // ---------------------------------------------------------------------------- MODIFYSETTINGS ----------------------------------------------------------------------------
         mModifySettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -281,10 +303,10 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-
+    // ---------------------------------------------------------------------------- GETTEST ----------------------------------------------------------------------------
     private void getInfo() {
         Log.d("getInfo", "launch");
-        String url = "http://192.168.8.102:8080/getTest";
+        String url = "http://192.168.8.101:8080/getTest";
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>()
@@ -317,12 +339,12 @@ public class SearchActivity extends AppCompatActivity {
         queue.add(getRequest);
     }
 
-
+    // ---------------------------------------------------------------------------- LOCATIONUPDATE ----------------------------------------------------------------------------
     private void sendLocationUpdates() {
         Log.d("sendLocationUpdates","launch");
 
         try {
-            String URL = "http://192.168.8.102:8080/updateLocation";
+            String URL = "http://192.168.8.101:8080/updateLocation";
             JSONObject jsonObject1 = new JSONObject();
             JSONObject auth = new JSONObject();
             JSONObject location = new JSONObject();
@@ -355,10 +377,10 @@ public class SearchActivity extends AppCompatActivity {
                             JSONObject oneUserNear = usernear.getJSONObject(i);
 
                             Log.d("oneUser", oneUserNear.getString("heyUserName"));
-                            //mixItems.add(new CarouselPicker.TextItem(oneUserNear.getString("heyUserName"), 20));
-                            //CarouselPicker.CarouselViewAdapter mixAdapter = new CarouselPicker.CarouselViewAdapter(SearchActivity.this, mixItems, 0);
-                            //mCarouselPicker.setAdapter(mixAdapter);
-                           // mixAdapter.notifyDataSetChanged();
+                            mixItems.add(new CarouselPicker.TextItem(oneUserNear.getString("heyUserName"), 20));
+                            CarouselPicker.CarouselViewAdapter mixAdapter = new CarouselPicker.CarouselViewAdapter(SearchActivity.this, mixItems, 0);
+                           mCarouselPicker.setAdapter(mixAdapter);
+                            mixAdapter.notifyDataSetChanged();
 
                             carouselImg.add((oneUserNear.getString("heyUserPic")));
                             UserNearUString += (oneUserNear.getString("heyUserName")) + " est près de vous.";
@@ -370,15 +392,15 @@ public class SearchActivity extends AppCompatActivity {
                         ImageListener imagePicassoListener = new ImageListener() {
                             @Override
                             public void setImageForPosition(int position, ImageView imageView) {
-                                Picasso.get().load(carouselImg.get(position)).into(imageView);
+//                                Picasso.get().load(carouselImg.get(position)).into(imageView);
 
                             }
                         };
                         Log.d("sizemCarouselView", "" + carouselImg.size());
                         Log.d("userNear", "" + usernear.length());
 
-                        mCarouselView.setPageCount(carouselImg.size());
-                        mCarouselView.setImageListener(imagePicassoListener);
+//                        mCarouselView.setPageCount(carouselImg.size());
+                       // mCarouselView.setImageListener(imagePicassoListener);
 
 
                     }catch (JSONException e){
@@ -418,7 +440,7 @@ public class SearchActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         try {
-            String URL = "http://192.168.8.102:8080/updateLocation";
+            String URL = "http://192.168.8.101:8080/updateLocation";
             JSONObject jsonObject1 = new JSONObject();
             JSONObject auth = new JSONObject();
             JSONObject location = new JSONObject();
@@ -466,7 +488,7 @@ public class SearchActivity extends AppCompatActivity {
         super.onDestroy();
         try {
 
-            String URL = "http://192.168.8.102:8080/updateLocation";
+            String URL = "http://192.168.8.101:8080/updateLocation";
             JSONObject jsonObject1 = new JSONObject();
             JSONObject auth = new JSONObject();
             JSONObject location = new JSONObject();

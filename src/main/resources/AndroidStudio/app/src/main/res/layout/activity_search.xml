@@ -58,7 +58,7 @@
         android:text="En recherche de copains... "
         android:textSize="30sp" />
 
-    <com.synnapps.carouselview.CarouselView
+    <!--com.synnapps.carouselview.CarouselView
         android:id="@+id/carouselView"
         android:layout_below="@+id/textView"
         android:layout_width="match_parent"
@@ -68,10 +68,10 @@
         app:radius="6dp"
         app:slideInterval="3000"
         app:strokeColor="#FF777777"
-        app:strokeWidth="1dp"/>
+        app:strokeWidth="1dp"/-->
 
 
-    <!--in.goodiebag.carouselpicker.CarouselPicker
+    <in.goodiebag.carouselpicker.CarouselPicker
         android:id="@+id/mCarouselPicker"
         android:layout_below="@+id/textView"
         android:layout_width="wrap_content"
@@ -79,9 +79,9 @@
         android:background="@color/colorPrimaryDark"
         app:items_visible="three"
         android:layout_margin="20dp"
-        /!-->
+        />
 
-    <!--TextView
+    <TextView
         android:id="@+id/userNearU"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -94,16 +94,17 @@
         android:gravity="center"
         android:text="Pas de copain"
         android:textSize="30sp"
-        /!-->
+        />
 
 
     <SeekBar
         android:id="@+id/seekBar"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/carouselView"
-        android:gravity="center"
+        android:layout_below="@+id/userNearU"
+        android:layout_marginTop="-3dp"
 
+        android:gravity="center"
         android:text="RadiusCubitus" />
 
     <TextView
