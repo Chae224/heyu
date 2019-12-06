@@ -58,18 +58,30 @@
         android:text="En recherche de copains... "
         android:textSize="30sp" />
 
+    <!--com.synnapps.carouselview.CarouselView
+        android:id="@+id/carouselView"
+        android:layout_below="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:fillColor="#FFFFFFFF"
+        app:pageColor="#00000000"
+        app:radius="6dp"
+        app:slideInterval="3000"
+        app:strokeColor="#FF777777"
+        app:strokeWidth="1dp"/-->
+
+
     <in.goodiebag.carouselpicker.CarouselPicker
         android:id="@+id/mCarouselPicker"
         android:layout_below="@+id/textView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:background="#DDD"
-        app:items_visible="seven"
+        android:background="@color/colorPrimaryDark"
+        app:items_visible="three"
+        android:layout_margin="20dp"
         />
 
-    <!--TextView
+    <TextView
         android:id="@+id/userNearU"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -82,18 +94,17 @@
         android:gravity="center"
         android:text="Pas de copain"
         android:textSize="30sp"
-        /!-->
+        />
 
 
     <SeekBar
         android:id="@+id/seekBar"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/mCarouselPicker"
-        android:layout_marginTop="127dp"
-        android:layout_marginBottom="20dp"
+        android:layout_below="@+id/userNearU"
+        android:layout_marginTop="-3dp"
+
         android:gravity="center"
-        android:max="1000"
         android:text="RadiusCubitus" />
 
     <TextView
@@ -105,7 +116,7 @@
         android:layout_marginLeft="29dp"
         android:layout_marginTop="14dp" />
 
-    <Button
+    <!--Button
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -113,7 +124,7 @@
         android:layout_marginTop="26dp"
         android:layout_marginBottom="60dp"
         android:gravity="center"
-        android:text="Rechercher les copains" />
+        android:text="Rechercher les copains" /-->
 
 
 </RelativeLayout>

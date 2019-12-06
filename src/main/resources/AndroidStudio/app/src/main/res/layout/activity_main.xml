@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Welcome - Login "
+        android:text="Hey U !"
         android:textSize="30sp" />
 
     <EditText
@@ -36,14 +36,16 @@
         android:hint="Please enter your password" />
 
     <Button
-        android:id="@+id/button"
 
-        android:layout_width="match_parent"
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/MainPassword"
-        android:layout_marginTop="124dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="117dp"
         android:layout_marginBottom="60dp"
-        android:gravity="center"
+        android:background="@color/colorAccent"
+        android:padding="10dp"
         android:text="Entrer" />
 
     <TextView
@@ -59,7 +61,7 @@
 
     <Button
         android:id="@+id/button2"
-
+        android:background="@color/colorAccent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/text2View"

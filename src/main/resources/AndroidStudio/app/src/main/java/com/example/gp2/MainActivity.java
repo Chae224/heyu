@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Find By View
         mButton = (Button) findViewById(R.id.button);
-        mImageUrl = (ImageView) findViewById(R.id.imageUrl);
+        //mImageUrl = (ImageView) findViewById(R.id.imageUrl);
         mNameInput = (EditText) findViewById(R.id.MainName);
         mPasswordInput = (EditText) findViewById(R.id.MainPassword);
         mButton2 = (Button) findViewById(R.id.button2);
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    String URL = "http://192.168.8.105:8080/login";
+                    String URL = "http://192.168.8.101:8080/login";
                     JSONObject jsonObject1 = new JSONObject();
                     JSONObject jsonBody = new JSONObject();
                     Log.d("mNameInputmainActivity", mNameInput.getText().toString());
@@ -104,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
                             try{
                                 isConnected = response.getBoolean("connected");
                                 message = response.getString("messageSent");
+                                String UserConnected = response.getString("userConnected");
+                                Log.d("userconnected",UserConnected);
 
                                 Log.d("es-tu connecté?", isConnected.toString());
                                 if(isConnected) {

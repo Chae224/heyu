@@ -78,7 +78,7 @@ public class RegisteryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    String URL = "http://192.168.8.105:8080/registering";
+                    String URL = "http://192.168.8.101:8080/registering";
                     JSONObject jsonBody1 = new JSONObject();
                     JSONObject jsonBody = new JSONObject();
 
