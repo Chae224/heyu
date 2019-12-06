@@ -291,7 +291,6 @@ public class ModifyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent mainActivityIntent = new Intent(ModifyActivity.this, MainActivity.class);
                 startActivityForResult(mainActivityIntent, MAIN_ACTIVITY_REQUEST_CODE);
 
             }
@@ -375,6 +374,7 @@ public class ModifyActivity extends AppCompatActivity {
 
             fullPhotoUri = data.getData();
 //             photo = (Bitmap) data.getExtras().get("intent");
+            Log.d("ResultCode", ""+)
             imageview.setImageURI(fullPhotoUri);
             Log.d("image :", ""+ data);
             imagepath = data.getDataString();
